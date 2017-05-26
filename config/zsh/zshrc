@@ -1,0 +1,65 @@
+zstyle ':completion:*' menu select
+
+#load zplug
+source ~/.zplug/init.zsh
+
+zplug "zplug/zplug"
+
+#syntax highlighting
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+#autocomplete
+zplug "zsh-users/zsh-completions"
+
+#omz libs
+zplug "lib/theme-and-appearance", from:oh-my-zsh
+zplug "lib/completions", from:oh-my-zsh
+zplug "lib/directories", from:oh-my-zsh
+zplug "lib/history", from:oh-my-zsh
+zplug "lib/key-bindings", from:oh-my-zsh
+
+
+#colored-man-pages
+man() {
+	env \
+		LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+		LESS_TERMCAP_md=$(printf "\e[1;31m") \
+		LESS_TERMCAP_me=$(printf "\e[0m") \
+		LESS_TERMCAP_se=$(printf "\e[0m") \
+		LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+		LESS_TERMCAP_ue=$(printf "\e[0m") \
+		LESS_TERMCAP_us=$(printf "\e[1;32m") \
+		PAGER="${commands[less]:-$PAGER}" \
+		_NROFF_U=1 \
+		PATH="$HOME/bin:$PATH" \
+			man "$@"
+}
+
+#git
+zplug "plugins/git", from:oh-my-zsh, if:"(( $+commands[git] ))"
+
+#theme
+zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs virtualenv)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs status time)
+POWERLEVEL9K_SHORTEN_DIR_LENGTH="2"
+
+POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND="7"
+
+POWERLEVEL9K_DIR_HOME_BACKGROUND="11"
+POWERLEVEL9K_DIR_DEFAULT_BACKGROUND="11"
+POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND="11"
+
+POWERLEVEL9K_VIRTUALENV_BACKGROUND="1"
+
+POWERLEVEL9K_TIME_BACKGROUND='11'
+
+POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=""
+POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=""
+
+zplug load
+
+#keychain
+eval $(keychain --eval --agents ssh --quiet id_ed25519)
+

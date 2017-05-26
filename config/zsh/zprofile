@@ -1,0 +1,10 @@
+export TERM="xterm-termite"
+export EDITOR="nvim"
+export TERMINAL="termite"
+export XDG_CONFIG_HOME="$HOME/.config"
+export STEAM_RUNTIME=0
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
+export QT_QPA_PLATFORMTHEME=gtk2
+export GOPATH=~/go
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/home/pierre/discord/DiscordPTB
