@@ -1,8 +1,11 @@
-Config files for : 
-- i3-gaps + i3blocks
+# Config files for : 
 - neovim
 - xorg + xressources
-- termite
-- compton
+- kitty
+- zsh
 - mpv
+## No used anymore but available in legacy folder
+- i3-gaps + i3blocks
+- compton
 - dunst
+- termite
