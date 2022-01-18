@@ -6,12 +6,16 @@ call dein#begin(expand('~/.config/nvim/dein/'))
 
 call dein#add('Shougo/dein.vim')
 
+
 "-----------------------------------------------------------------------------------
 "Vim-airline
 call dein#add('bling/vim-airline')
 
 "theme
 call dein#add('vim-airline/vim-airline-themes')
+call dein#add('joshdick/onedark.vim')
+syntax on
+colorscheme onedark
 
 "startscreen
 call dein#add('mhinz/vim-startify')
@@ -24,18 +28,6 @@ call dein#add('kabbamine/vcoolor.vim')
 "-----------------------------------------------------------------------------------
 "nerdtree
 call dein#add('scrooloose/nerdtree', {'on_cmd': 'NERDTreeToggle'})
-
-"deoplete
-"call dein#add('Shougo/deoplete.nvim')
-"if !has('nvim')
-"  call dein#add('roxma/nvim-yarp')
-"  call dein#add('roxma/vim-hug-neovim-rpc')
-"endif
-"call dein#add('zchee/deoplete-jedi', {'on_ft': ['python']})
-"call dein#add('deoplete-plugins/deoplete-clang')
-
-"neomake
-"call dein#add('neomake/neomake')
 
 "coc
 call dein#add('neoclide/coc.nvim', {'branch': 'release'})
@@ -68,17 +60,6 @@ endfunction
 autocmd User AirlineAfterInit call AirlineInit()
 let g:airline_theme='term'
 
-
-
-"deoplete
-"let g:deoplete#enable_at_startup = 1
-"neomake
-"let g:neomake_python_enabled_makers = ['flake8']
-"deoplete-clang
-"let g:deoplete#sources#clang#libclang_path = "/usr/lib64/libclang.so"
-"let g:deoplete#sources#clang#clang_header = "/usr/lib64/clang"
-
-
 "echodoc
 let g:echodoc_enable_at_startup = 1
 
@@ -100,7 +81,6 @@ endif
 
 
 "-----------------------------------------------------------------------------------
-
 
 set undodir=~/.config/nvim/.undo/
 set backupdir=~/.config/nvim/.backup/
