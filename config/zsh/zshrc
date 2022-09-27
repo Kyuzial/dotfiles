@@ -95,10 +95,8 @@ fi
 #	Aliases
 ############################################################################################
 
-alias ls='exa -g --group-directories-first'
 alias la='ls -la'
-alias ll='ls --git -l'
-alias lt='ls --tree -D -L'
+alias ll='ls -l'
 
 alias grep="grep -n"
 
