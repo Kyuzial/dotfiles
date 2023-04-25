@@ -14,34 +14,55 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 ############################################################################################
-#	Annexes
+#	Prompt
 ############################################################################################
-zinit light-mode for \
-    zdharma-continuum/z-a-rust \
-    zdharma-continuum/z-a-as-monitor \
-    zdharma-continuum/z-a-patch-dl \
-    zdharma-continuum/z-a-bin-gem-node
+zinit ice as"command" from"gh-r" \
+          atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+          atpull"%atclone" src"init.zsh"
+zinit light starship/starship
 
-############################################################################################
+###########################################################################################
 #	Plugins
-############################################################################################
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+###########################################################################################
+zinit wait lucid for \
+	OMZL::clipboard.zsh \
+	OMZL::compfix.zsh \
+	OMZL::completion.zsh \
+	OMZL::correction.zsh \
+    atload"
+      alias ..='cd ..'
+      alias ...='cd ../..'
+      alias ....='cd ../../..'
+      alias .....='cd ../../../..'" \
+	OMZL::directories.zsh \
+	OMZL::git.zsh \
+	OMZL::grep.zsh \
+	OMZP::git \
 
 zinit wait lucid light-mode for \
   atinit"zicompinit; zicdreplay" \
       zdharma-continuum/fast-syntax-highlighting \
-  atload"_zsh_autosuggest_start" \
+  atinit"ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20" atload"_zsh_autosuggest_start" \
       zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' \
+  atinit"
+      zstyle ':completion:*' completer _expand _complete _ignored _approximate
+      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+      zstyle ':completion:*' menu select=2
+      zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+      zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,comm,cmd -w -w'
+      zstyle ':completion:*:descriptions' format '-- %d --'
+      zstyle ':completion:*:processes' command 'ps -au$USER'" \
       zsh-users/zsh-completions
 
-zinit light zsh-users/zsh-history-substring-search
 
+zi ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
+zi light trapd00r/LS_COLORS
+
+zinit light zsh-users/zsh-history-substring-search
 ############################################################################################
 #	Settings
 ############################################################################################
-
-export CLICOLOR=true
 
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
@@ -60,29 +81,12 @@ setopt hist_verify
 setopt NO_BG_NICE
 setopt NO_HUP
 setopt NO_BEEP
-# allow functions to have local options
-setopt LOCAL_OPTIONS
-# allow functions to have local traps
-setopt LOCAL_TRAPS
-# share history between sessions ???
-setopt SHARE_HISTORY
 # add timestamps to history
 setopt EXTENDED_HISTORY
 setopt PROMPT_SUBST
 setopt CORRECT
 setopt COMPLETE_IN_WORD
 setopt histignorespace
-
-setopt auto_cd
-setopt COMPLETE_ALIASES
-
-zstyle ':completion:*' menu select
-zstyle ':completion:*' rehash true
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-zstyle ':completion:*' completer _oldlist _expand _complete _match _ignored _approximate
-
-#autoload -Uz compinit
-#compinit -C
 
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent -t 1h > "$XDG_RUNTIME_DIR/ssh-agent.env"
@@ -95,13 +99,6 @@ fi
 #	Aliases
 ############################################################################################
 
-alias la='ls -la'
-alias ll='ls -l'
-
-alias grep="grep -n"
-
-alias gp="git push"
-alias gf="git fetch"
 
 ############################################################################################
 #	Keybinds
@@ -148,27 +145,3 @@ if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
 	add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
 fi
 
-############################################################################################
-#	POWERLEVEL9K
-############################################################################################
-ZLE_RPROMPT_INDENT=0
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs virtualenv)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(background_jobs status time)
-POWERLEVEL9K_SHORTEN_DIR_LENGTH="2"
-
-POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND="7"
-
-POWERLEVEL9K_DIR_HOME_BACKGROUND="11"
-POWERLEVEL9K_DIR_DEFAULT_BACKGROUND="11"
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND="11"
-
-POWERLEVEL9K_VIRTUALENV_BACKGROUND="1"
-
-POWERLEVEL9K_TIME_BACKGROUND='11'
-
-POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=""
-POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=""
-
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-#[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
