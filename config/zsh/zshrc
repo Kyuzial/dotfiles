@@ -16,11 +16,14 @@ autoload -Uz _zinit
 ############################################################################################
 #	Prompt
 ############################################################################################
-zinit ice as"command" from"gh-r" \
-          atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
-          atpull"%atclone" src"init.zsh"
-zinit light starship/starship
+#zinit lucid for \
+#    as"command" \
+#    from"gh-r" \
+#    atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' \
+#    starship/starship
 
+#zinit light spaceship-prompt/spaceship-prompt
+zinit light sindresorhus/pure
 ###########################################################################################
 #	Plugins
 ###########################################################################################
@@ -40,12 +43,12 @@ zinit wait lucid for \
 	OMZP::git \
 
 zinit wait lucid light-mode for \
-  atinit"zicompinit; zicdreplay" \
-      zdharma-continuum/fast-syntax-highlighting \
-  atinit"ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20" atload"_zsh_autosuggest_start" \
-      zsh-users/zsh-autosuggestions \
-  blockf atpull'zinit creinstall -q .' \
-  atinit"
+    atinit"zicompinit; zicdreplay" \
+  zdharma-continuum/fast-syntax-highlighting \
+    atload"_zsh_autosuggest_start" \
+  zsh-users/zsh-autosuggestions \
+    blockf atpull'zinit creinstall -q .' \
+    atinit"
       zstyle ':completion:*' completer _expand _complete _ignored _approximate
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
       zstyle ':completion:*' menu select=2
@@ -53,7 +56,7 @@ zinit wait lucid light-mode for \
       zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,comm,cmd -w -w'
       zstyle ':completion:*:descriptions' format '-- %d --'
       zstyle ':completion:*:processes' command 'ps -au$USER'" \
-      zsh-users/zsh-completions
+  zsh-users/zsh-completions
 
 
 zi ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
