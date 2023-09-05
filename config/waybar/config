@@ -5,27 +5,23 @@
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
     // Choose the order of the modules
-    "modules-left": ["wlr/workspaces"],
+    "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
-    "modules-right": ["keyboard-state", "pulseaudio", "cpu", "memory", "temperature", "backlight", "keyboard-state", "battery", "battery#bat1", "battery#bat2", "clock", "tray"],
+    "modules-right": ["custom/weather", "keyboard-state", "pulseaudio", "cpu", "memory", "clock", "tray"],
     // Modules configuration
-    "wlr/workspaces": {
-         "disable-scroll": true,
+    "hyprland/workspaces": {
          "all-outputs": true,
          "format": "{name}",
-         "format-icons": {
-             "1": "",
-             "2": "",
-             "3": "",
-             "4": "",
-             "5": "",
-             "urgent": "",
-             "focused": "",
-             "default": ""
-         }
+	 "on-click": "activate",
+	 "on-scroll-up": "hyprctl dispatch workspace e-1",
+	 "on-scroll-down": "hyprctl dispatch workspace e+1"
+    },
+    "custom/weather": {
+        "format": "{}",
+        "exec": "curl -s 'wttr.in/versailles?format=2'| sed -e 's/🌡//g' -e 's/🌬//g' -e 's/ //g' -e 's/+/ +/g' -e 's/-/ -/g' -e 's/C/C  /g'",
+        "interval": 1800
     },
     "keyboard-state": {
-        "numlock": true,
         "capslock": true,
         "format": "{name} {icon}",
         "format-icons": {
@@ -47,7 +43,7 @@
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format": "{:%H:%M | %Y-%m-%d}"
     },
     "cpu": {
         "format": "{usage}% ",
@@ -61,7 +57,7 @@
         // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
         "critical-threshold": 80,
         // "format-critical": "{temperatureC}°C {icon}",
-        "format": "{temperatureC}°C {icon}",
+        "format": "{temperatureC}°C",
         "format-icons": ["", "", ""]
     },
     "backlight": {
