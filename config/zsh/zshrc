@@ -10,59 +10,55 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
 
-############################################################################################
-#	Prompt
-############################################################################################
-#zinit lucid for \
-#    as"command" \
-#    from"gh-r" \
-#    atinit'export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"' atload'eval "$(starship init zsh)"' \
-#    starship/starship
+# Prompt
+zinit ice as"command" from"gh-r" \
+          atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+          atpull"%atclone" src"init.zsh"
+zinit light starship/starship
 
-#zinit light spaceship-prompt/spaceship-prompt
-zinit light sindresorhus/pure
-###########################################################################################
-#	Plugins
-###########################################################################################
+# Plugins
 zinit wait lucid for \
 	OMZL::clipboard.zsh \
 	OMZL::compfix.zsh \
 	OMZL::completion.zsh \
 	OMZL::correction.zsh \
-    atload"
-      alias ..='cd ..'
-      alias ...='cd ../..'
-      alias ....='cd ../../..'
-      alias .....='cd ../../../..'" \
 	OMZL::directories.zsh \
 	OMZL::git.zsh \
 	OMZL::grep.zsh \
-	OMZP::git \
+	OMZP::git
 
-zinit wait lucid light-mode for \
-    atinit"zicompinit; zicdreplay" \
+zinit wait"1" lucid for \
+    atinit="zicompinit; zicdreplay" \
   zdharma-continuum/fast-syntax-highlighting \
     atload"_zsh_autosuggest_start" \
-  zsh-users/zsh-autosuggestions \
-    blockf atpull'zinit creinstall -q .' \
-    atinit"
-      zstyle ':completion:*' completer _expand _complete _ignored _approximate
-      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-      zstyle ':completion:*' menu select=2
-      zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
-      zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,comm,cmd -w -w'
-      zstyle ':completion:*:descriptions' format '-- %d --'
-      zstyle ':completion:*:processes' command 'ps -au$USER'" \
-  zsh-users/zsh-completions
+  zsh-users/zsh-autosuggestions
+    
+zinit ice wait"0" lucid blockf 
+zinit light zsh-users/zsh-completions
+zstyle ':completion:*' completer _expand _complete _ignored _approximate
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,comm,cmd -w -w'
+zstyle ':completion:*:descriptions' format '-- %d --'
+zstyle ':completion:*:processes' command 'ps -au$USER'
 
-
-zi ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
-zi light trapd00r/LS_COLORS
+zinit ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
+zinit light trapd00r/LS_COLORS
 
 zinit light zsh-users/zsh-history-substring-search
+
+autoload -Uz compinit
+
+if [ $(date +'%j') != $(date -r ${ZDOTDIR:-$HOME}/.zcompdump +'%j') ]; then
+  compinit;
+else
+  compinit -C;
+fi
+
+zinit cdreplay -q
+
 ############################################################################################
 #	Settings
 ############################################################################################
@@ -101,8 +97,13 @@ fi
 ############################################################################################
 #	Aliases
 ############################################################################################
+alias hx="helix"
+alias s="kitten ssh"
 
-
+function zr () { zellij run --name "$*" -- zsh -ic "$*";}
+function zrf () { zellij run --name "$*" --floating -- zsh -ic "$*";}
+function ze () { zellij edit "$*";}
+function zef () { zellij edit --floating "$*";}
 ############################################################################################
 #	Keybinds
 ############################################################################################
@@ -148,3 +149,14 @@ if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
 	add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
 fi
 
+
+# pnpm
+export PNPM_HOME="/home/pierre/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# opam configuration
+[[ ! -r /home/pierre/.opam/opam-init/init.zsh ]] || source /home/pierre/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
