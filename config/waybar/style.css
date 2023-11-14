@@ -1,11 +1,25 @@
+/*colors*/
+/* Dracula */
+@define-color colbg       #282a36;
+@define-color colbg2      #44475a;
+@define-color colfg       #f8f8f2;
+@define-color colgrey     #6272a4;
+@define-color colcyan     #8be9fd;
+@define-color colgreen    #50fa7b;
+@define-color colorange   #ffb86c;
+@define-color colmagenta  #ff79c6;
+@define-color colviolet   #bd93f9;
+@define-color colred      #ff5555;
+@define-color colyellow   #f1fa8c;
+
 * {
   font-family: Ubuntu, "Font Awesome 5 Free";
   font-size: 13px;
 }
 
 window#waybar {
-  background-color: rgba(43, 48, 59, 0.9);
-  color: #ffffff;
+  background-color: @colbg;
+  color: @colfg;
   transition-property: background-color;
   transition-duration: 0.5s;
 }
@@ -28,7 +42,7 @@ button:hover {
 #workspaces button {
   padding: 0 5px;
   background-color: transparent;
-  color: #ffffff;
+  color: @colfg;
 }
 
 #workspaces button:hover {
@@ -36,12 +50,12 @@ button:hover {
 }
 
 #workspaces button.active {
-  background-color: #64727d;
+  background-color: @colbg2;
   box-shadow: inset 0 -3px #ffffff;
 }
 
 #workspaces button.urgent {
-  background-color: #eb4d4b;
+  background-color: @colred;
 }
 
 #mode {
@@ -67,12 +81,13 @@ button:hover {
   padding: 0 10px;
   color: #ffffff;
   border-radius: 4px;
-  background-color: #212121;
+  background: @colbg2;
 }
 
 #window,
 #workspaces {
   margin: 0 4px;
+  border-radius: 3px;
 }
 
 .modules-left > widget:first-child > #workspaces {
@@ -96,8 +111,8 @@ button:hover {
 }
 
 #battery.critical:not(.charging) {
-  background-color: #f53c3c;
-  color: #ffffff;
+  background-color: @colred;
+  color: @colfg;
   animation: blink 0.5s linear infinite alternate;
 }
 
@@ -118,13 +133,9 @@ label:focus {
   background-color: #f53c3c;
 }
 
-#custom-media {
-  background-color: #66cc99;
-  min-width: 100px;
-}
 
 #temperature.critical {
-  background-color: #eb4d4b;
+  background-color: @colred;
 }
 
 #tray > .passive {
@@ -133,7 +144,7 @@ label:focus {
 
 #tray > .needs-attention {
   -gtk-icon-effect: highlight;
-  background-color: #eb4d4b;
+  background-color: @colred;
 }
 
 #idle_inhibitor {
