@@ -7,7 +7,7 @@
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
-    "modules-right": ["custom/weather", "keyboard-state", "pulseaudio", "cpu", "memory", "clock", "tray"],
+    "modules-right": ["custom/weather", "pulseaudio", "cpu", "memory", "clock", "tray"],
     // Modules configuration
     "hyprland/workspaces": {
          "all-outputs": true,
@@ -18,30 +18,14 @@
     },
     "custom/weather": {
         "format": "{}",
-        "exec": "curl -s 'wttr.in/versailles?format=2'| sed -e 's/🌡//g' -e 's/🌬//g' -e 's/ //g' -e 's/+/ +/g' -e 's/-/ -/g' -e 's/C/C  /g'",
-        "interval": 1800
-    },
-    "keyboard-state": {
-        "capslock": true,
-        "format": "{name} {icon}",
-        "format-icons": {
-            "locked": "",
-            "unlocked": ""
-        }
-    },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        }
+        "exec": "./weather",
+        "interval": 3600
     },
     "tray": {
         // "icon-size": 21,
         "spacing": 10
     },
     "clock": {
-        // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format": "{:%H:%M | %Y-%m-%d}"
     },
@@ -53,9 +37,9 @@
         "format": "{}% "
     },
     "temperature": {
-        // "thermal-zone": 2,
+        "thermal-zone": 2,
         // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-        "critical-threshold": 80,
+        "critical-threshold": 70,
         // "format-critical": "{temperatureC}°C {icon}",
         "format": "{temperatureC}°C",
         "format-icons": ["", "", ""]
@@ -82,15 +66,6 @@
     "battery#bat2": {
         "bat": "BAT1"
     },
-    "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
-    },
     "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
         "format": "{volume}% {icon} {format_source}",
@@ -110,5 +85,11 @@
         },
         "on-click": "pavucontrol"
     },
+    "wireplumber": {
+    "format": "{volume}% {icon}",
+    "format-muted": "",
+    "on-click": "helvum",
+    "format-icons": ["", "", ""]
+    }
 }
 

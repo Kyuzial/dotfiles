@@ -13,7 +13,7 @@
 @define-color colyellow   #f1fa8c;
 
 * {
-  font-family: Ubuntu, "Font Awesome 5 Free";
+  font-family: "Noto Sans Medium", "Font Awesome 6 Free";
   font-size: 13px;
 }
 
@@ -69,7 +69,6 @@ button:hover {
 #disk,
 #temperature,
 #backlight,
-#network,
 #pulseaudio,
 #wireplumber,
 #custom-media,
