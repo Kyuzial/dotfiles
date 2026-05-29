@@ -1,0 +1,136 @@
+configuration {
+    modi:                       "drun,run,filebrowser,window";
+    show-icons:                 true;
+    icon-theme:                 "Papirus-Dark";
+    display-drun:               "";
+    display-run:                "";
+    display-filebrowser:        "";
+    display-window:             "";
+    drun-display-format:        "{name}";
+    window-format:              "{w} · {c} · {t}";
+}
+
+@theme "/dev/null"
+
+* {
+    font:                        "FiraCode Nerd Font Propo 11";
+    bg-color:                    #1e1e2e80; /* semi-transparent Catppuccin Base */
+    bg-selected:                 #bd93f9cc; /* semi-transparent Dracula Purple */
+    fg-color:                    #cdd6f4;
+    fg-selected:                 #11111b;
+    border-color:                #bd93f9;
+    
+    background-color:            transparent;
+    text-color:                  @fg-color;
+    margin:                      0px;
+    padding:                     0px;
+}
+
+window {
+    transparency:                "real";
+    location:                    center;
+    anchor:                      center;
+    fullscreen:                  false;
+    width:                       600px;
+    x-offset:                    0px;
+    y-offset:                    0px;
+
+    enabled:                     true;
+    border-radius:               16px;
+    border:                      2px solid;
+    border-color:                @border-color;
+    background-color:            #181825d8; /* dark translucent background */
+    cursor:                      "default";
+}
+
+mainbox {
+    enabled:                     true;
+    spacing:                     0px;
+    background-color:            transparent;
+    children:                    [ "inputbar", "listview" ];
+}
+
+inputbar {
+    enabled:                     true;
+    spacing:                     10px;
+    margin:                      0px;
+    padding:                     20px;
+    background-color:            transparent;
+    children:                    [ "prompt", "entry" ];
+}
+
+prompt {
+    enabled:                     true;
+    background-color:            transparent;
+    text-color:                  @border-color;
+    font:                        "FiraCode Nerd Font Propo 13";
+}
+
+entry {
+    enabled:                     true;
+    background-color:            transparent;
+    text-color:                  @fg-color;
+    cursor:                      "text";
+    placeholder:                 "Search apps...";
+    placeholder-color:           #6c7086;
+}
+
+listview {
+    enabled:                     true;
+    columns:                     1;
+    lines:                       8;
+    cycle:                       true;
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    reverse:                     false;
+    fixed-height:                true;
+    fixed-columns:               true;
+    
+    spacing:                     5px;
+    margin:                      0px;
+    padding:                     0px 20px 20px 20px;
+    background-color:            transparent;
+}
+
+element {
+    enabled:                     true;
+    spacing:                     10px;
+    margin:                      0px;
+    padding:                     8px 12px;
+    border-radius:               10px;
+    background-color:            transparent;
+    text-color:                  @fg-color;
+    cursor:                      "pointer";
+}
+
+element normal.normal {
+    background-color:            transparent;
+    text-color:                  @fg-color;
+}
+
+element alternate.normal {
+    background-color:            transparent;
+    text-color:                  @fg-color;
+}
+
+element selected.normal {
+    background-color:            @bg-selected;
+    text-color:                  @fg-selected;
+}
+
+element-icon {
+    background-color:            transparent;
+    text-color:                  inherit;
+    size:                        28px;
+    cursor:                      inherit;
+}
+
+element-text {
+    background-color:            transparent;
+    text-color:                  inherit;
+    highlight:                   inherit;
+    cursor:                      inherit;
+    vertical-align:              0.5;
+    horizontal-align:            0.0;
+}
