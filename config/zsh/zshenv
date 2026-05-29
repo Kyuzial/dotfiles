@@ -1,4 +1,8 @@
 export PAGER="less"
 export EDITOR="nvim"
-export VISUAL=$EDITOR
-export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
+export VISUAL="$EDITOR"
+
+# Only set SSH_AUTH_SOCK to GCR if it actually exists (makes it portable to other non-GNOME systems)
+if [[ -n "$XDG_RUNTIME_DIR" && -S "$XDG_RUNTIME_DIR/gcr/ssh" ]]; then
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+fi

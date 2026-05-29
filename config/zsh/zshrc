@@ -11,61 +11,53 @@ fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
 
-# Prompt
-zinit ice as"command" from"gh-r" \
-          atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
-          atpull"%atclone" src"init.zsh"
-zinit light starship/starship
-
-# Plugins
+# Load Oh My Zsh libraries
 zinit wait lucid for \
-	OMZL::clipboard.zsh \
 	OMZL::compfix.zsh \
 	OMZL::completion.zsh \
 	OMZL::correction.zsh \
-	OMZL::directories.zsh \
-	OMZL::git.zsh \
-	OMZL::grep.zsh \
-	OMZP::git
+	OMZL::directories.zsh
 
-zinit wait"1" lucid for \
-    atinit="zicompinit; zicdreplay" \
-  zdharma-continuum/fast-syntax-highlighting \
+# Plugins - Load Syntax Highlighting, Autosuggestions, completions, and handy OMZ snippets
+zinit wait lucid for \
+    atinit"zicompinit; zicdreplay" \
+        zdharma-continuum/fast-syntax-highlighting \
     atload"_zsh_autosuggest_start" \
-  zsh-users/zsh-autosuggestions
-    
-zinit ice wait"0" lucid blockf 
-zinit light zsh-users/zsh-completions
-zstyle ':completion:*' completer _expand _complete _ignored _approximate
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+        zsh-users/zsh-autosuggestions \
+    blockf \
+        zsh-users/zsh-completions \
+    OMZP::colored-man-pages \
+    OMZP::sudo
+
+# History substring search MUST be loaded after syntax highlighting
+# And its keybinds must be applied after it loads
+zinit wait"1" lucid atload'
+  [[ -n "${key[Up]}"   ]] && bindkey -- "${key[Up]}"   history-substring-search-up
+  [[ -n "${key[Down]}" ]] && bindkey -- "${key[Down]}" history-substring-search-down
+' for \
+    zsh-users/zsh-history-substring-search
+
+############################################################################################
+#	Fish-like Completions (zstyle)
+############################################################################################
+# Enable Fish-like interactive menu selection
 zstyle ':completion:*' menu select=2
-zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
-zstyle ':completion:*:*:*:*:processes' command 'ps -u $USER -o pid,user,comm,cmd -w -w'
+# Case-insensitive completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+# Colored completion lists (uses ls colors)
+zstyle ':completion:*' list-colors ''
+# Complete options for commands automatically
+zstyle ':completion:*' complete-options true
+# Formatting for descriptions
 zstyle ':completion:*:descriptions' format '-- %d --'
-zstyle ':completion:*:processes' command 'ps -au$USER'
-
-zinit ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
-zinit light trapd00r/LS_COLORS
-
-zinit light zsh-users/zsh-history-substring-search
-
-autoload -Uz compinit
-
-if [ $(date +'%j') != $(date -r ${ZDOTDIR:-$HOME}/.zcompdump +'%j') ]; then
-  compinit;
-else
-  compinit -C;
-fi
-
-zinit cdreplay -q
 
 ############################################################################################
 #	Settings
 ############################################################################################
 
 HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=50000
+SAVEHIST=50000
 setopt inc_append_history
 setopt share_history
 setopt hist_ignore_dups
@@ -84,26 +76,61 @@ setopt NO_BEEP
 setopt EXTENDED_HISTORY
 setopt PROMPT_SUBST
 setopt CORRECT
-setopt COMPLETE_IN_WORD
-setopt histignorespace
 
-if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    ssh-agent -t 1h > "$XDG_RUNTIME_DIR/ssh-agent.env"
-fi
-if [[ ! "$SSH_AUTH_SOCK" ]]; then
-    source "$XDG_RUNTIME_DIR/ssh-agent.env" >/dev/null
+# Keep completion in word (like you requested) and jump to end
+setopt COMPLETE_IN_WORD
+setopt ALWAYS_TO_END
+
+# Portable SSH Agent startup
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    export SSH_ENV="$HOME/.ssh/environment"
+    if [[ -f "$SSH_ENV" ]]; then
+        source "$SSH_ENV" >/dev/null
+    fi
+    # If still no agent or agent is dead/unresponsive
+    if ! ssh-add -l &>/dev/null && (( $? == 2 )); then
+        mkdir -p "$HOME/.ssh"
+        ssh-agent -t 1h > "$SSH_ENV"
+        source "$SSH_ENV" >/dev/null
+    fi
 fi
 
 ############################################################################################
 #	Aliases
 ############################################################################################
-alias hx="helix"
 alias s="kitten ssh"
+alias hyprpicker="hyprpicker -n"
 
-function zr () { zellij run --name "$*" -- zsh -ic "$*";}
-function zrf () { zellij run --name "$*" --floating -- zsh -ic "$*";}
-function ze () { zellij edit "$*";}
-function zef () { zellij edit --floating "$*";}
+# Safety & convenience
+alias rm="rm -i"
+alias cp="cp -i"
+alias mv="mv -i"
+alias grep="grep --color=auto"
+alias diff="diff --color=auto"
+
+############################################################################################
+#	FZF (Fuzzy Finder) Configuration
+############################################################################################
+if (( $+commands[fzf] )); then
+    # Initialize fzf shell integration (completions, keybindings)
+    source <(fzf --zsh)
+
+    # Use `fd` instead of standard `find` for fuzzy finding
+    if (( $+commands[fd] )); then
+        export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
+        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --follow --exclude .git'
+    fi
+
+    # Add preview windows using `bat`
+    if (( $+commands[bat] )); then
+        export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=header,grid --line-range :500 {}'"
+    fi
+
+    # General FZF appearance and behavior
+    export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --info=inline'
+fi
+
 ############################################################################################
 #	Keybinds
 ############################################################################################
@@ -131,13 +158,16 @@ key[Shift-Tab]="${terminfo[kcbt]}"
 [[ -n "${key[Insert]}"    ]] && bindkey -- "${key[Insert]}"     overwrite-mode
 [[ -n "${key[Backspace]}" ]] && bindkey -- "${key[Backspace]}"  backward-delete-char
 [[ -n "${key[Delete]}"    ]] && bindkey -- "${key[Delete]}"     delete-char
-[[ -n "${key[Up]}"        ]] && bindkey -- "${key[Up]}"         history-substring-search-up
-[[ -n "${key[Down]}"      ]] && bindkey -- "${key[Down]}"       history-substring-search-down
+
 [[ -n "${key[Left]}"      ]] && bindkey -- "${key[Left]}"       backward-char
 [[ -n "${key[Right]}"     ]] && bindkey -- "${key[Right]}"      forward-char
 [[ -n "${key[PageUp]}"    ]] && bindkey -- "${key[PageUp]}"     beginning-of-buffer-or-history
 [[ -n "${key[PageDown]}"  ]] && bindkey -- "${key[PageDown]}"   end-of-buffer-or-history
 [[ -n "${key[Shift-Tab]}" ]] && bindkey -- "${key[Shift-Tab]}"  reverse-menu-complete
+
+# Ctrl + Left/Right arrow word-jumping
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
@@ -149,14 +179,14 @@ if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
 	add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
 fi
 
+# Handy utility functions
+take() {
+    mkdir -p "$1" && cd "$1"
+}
 
-# pnpm
-export PNPM_HOME="/home/pierre/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
+calc() {
+    echo "$@" | bc -l
+}
 
-# opam configuration
-[[ ! -r /home/pierre/.opam/opam-init/init.zsh ]] || source /home/pierre/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+# Prompt
+eval "$(starship init zsh)"
