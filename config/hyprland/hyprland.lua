@@ -270,6 +270,13 @@ hl.window_rule({
     no_follow_mouse = true,
 })
 
+-- Layer rules for blur
+hl.layer_rule({
+    match        = { namespace = "rofi" },
+    blur         = true,
+    ignore_alpha = 0.5,
+})
+
 
 ---------------------
 ---- KEYBINDINGS ----
@@ -284,8 +291,8 @@ hl.bind(mainMod .. " + C", hl.dsp.window.close())
 hl.bind(mainMod .. " + M", hl.dsp.exit())
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("thunar"))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("wofi --show drun -I"))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("rofi -show drun"))
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))  -- dwindle only
