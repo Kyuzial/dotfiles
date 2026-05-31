@@ -121,11 +121,14 @@ hl.config({
 
     decoration = {
         rounding = 2,
+        dim_modal = true,
         blur = {
             enabled           = true,
             size              = 4,
             passes            = 1,
             new_optimizations = true,
+            popups            = true,
+            popups_ignorealpha = 0.2,
         },
         shadow = {
             enabled      = true,
@@ -196,12 +199,88 @@ hl.window_rule({ match = { class = "error" },                 float = true })
 hl.window_rule({ match = { class = "splash" },                float = true })
 hl.window_rule({ match = { class = "confirmreset" },          float = true })
 hl.window_rule({ match = { class = "lxqt-policykit-agent" },  float = true })
-hl.window_rule({ match = { title = "Open File" },             float = true })
+hl.window_rule({
+    name   = "file-picker-open-dialog",
+    match  = { title = "^(Open|Save|Choose) (File|Folder|Directory|Files)$" },
+    float  = true,
+    size   = { 900, 600 },
+    center = true,
+})
+hl.window_rule({
+    name   = "file-picker-portal",
+    match  = { class = "xdg-desktop-portal-gtk" },
+    float  = true,
+    size   = { 900, 600 },
+    center = true,
+})
 hl.window_rule({ match = { title = "branchdialog" },          float = true })
-hl.window_rule({ match = { title = "^Picture in picture$" },  float = true })
-hl.window_rule({ match = { title = "^Picture-in-Picture$" },  float = true })
+hl.window_rule({
+    name  = "picture-in-picture",
+    match = { title = "^Picture[- ]in[- ]picture$" },
+    float = true,
+    pin   = true,
+})
 hl.window_rule({ match = { title = "^Media viewer$" },        float = true })
 hl.window_rule({ match = { title = "^File Operation Progress$" }, float = true })
+
+-- Apply float to windows tagged as floating-window (e.g. desktop Bitwarden)
+hl.window_rule({
+    name  = "floating-window-tagged",
+    match = { tag = "floating-window" },
+    float = true,
+})
+
+-- Pinentry (GPG/passwords)
+hl.window_rule({
+    name         = "gpg-pinentry",
+    match        = { class = "^pinentry-" },
+    float        = true,
+    center       = true,
+    stay_focused = true,
+})
+
+-- Polkit Agents (Authentication dialogs)
+hl.window_rule({
+    name         = "polkit-gnome",
+    match        = { class = "polkit-gnome-authentication-agent-1" },
+    float        = true,
+    center       = true,
+    stay_focused = true,
+})
+hl.window_rule({
+    name         = "polkit-kde",
+    match        = { class = "org.kde.polkit-kde-authentication-agent-1" },
+    float        = true,
+    center       = true,
+    stay_focused = true,
+})
+
+-- Global Modal Windows handling
+hl.window_rule({
+    name         = "global-modals",
+    match        = { modal = true },
+    float        = true,
+    center       = true,
+    stay_focused = true,
+})
+
+-- Bitwarden browser extension popups (matches Firefox, Vivaldi, Chrome, etc.)
+hl.window_rule({
+    name         = "bitwarden-extension-popup",
+    match        = { title = "^Extension: \\(Bitwarden.*" },
+    float        = true,
+    size         = { 650, 650 },
+    center       = true,
+    no_anim      = true,
+})
+hl.window_rule({
+    name         = "bitwarden-extension-popup-initial",
+    match        = { initial_title = "^Extension: \\(Bitwarden.*" },
+    float        = true,
+    size         = { 650, 650 },
+    center       = true,
+    no_anim      = true,
+})
 
 -- Vivaldi: prevent compositor from treating it as fullscreen (client state = 0)
 -- fullscreen_state sets the window's internal/client fullscreen state.
@@ -352,3 +431,28 @@ hl.bind("XF86AudioPrev",         hl.dsp.exec_cmd("playerctl previous"),         
 hl.bind(mainMod .. " + PRINT",     hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
 hl.bind(mainMod .. " + code:49",   hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
+
+-- Dynamic Fix for browser extension popups (like Bitwarden)
+-- Because these windows initially open as a standard browser window (matching class 'firefox' / title 'Mozilla Firefox')
+-- and change their title to 'Extension: (Bitwarden...' after creation, standard static rules cannot float them.
+local function fix_bitwarden_popups()
+    for _, w in ipairs(hl.get_windows()) do
+        if w.title:match("^Extension:.*Bitwarden") then
+            hl.dispatch(hl.dsp.window.float({ action = "enable", window = "address:" .. w.address }))
+            hl.dispatch(hl.dsp.window.resize({ x = 650, y = 650, relative = false, window = "address:" .. w.address }))
+            hl.dispatch(hl.dsp.window.center({ window = "address:" .. w.address }))
+        end
+    end
+end
+
+-- Fix any currently open popups when the configuration starts/reloads
+fix_bitwarden_popups()
+
+-- Watch for title updates and float/center/resize them dynamically
+hl.on("window.title", function(w)
+    if w.title:match("^Extension:.*Bitwarden") then
+        hl.dispatch(hl.dsp.window.float({ action = "enable", window = "address:" .. w.address }))
+        hl.dispatch(hl.dsp.window.resize({ x = 650, y = 650, relative = false, window = "address:" .. w.address }))
+        hl.dispatch(hl.dsp.window.center({ window = "address:" .. w.address }))
+    end
+end)
