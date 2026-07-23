@@ -46,8 +46,10 @@ hl.env("SDL_VIDEODRIVER",                 "wayland")
 -- hl.exec_cmd() spawns async processes — no need for `& disown`.
 hl.on("hyprland.start", function()
     -- Wayland / session environment
+    hl.exec_cmd("systemctl --user start hyprland-session.target")
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
     hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+
 
     -- Polkit agent
     hl.exec_cmd("/usr/bin/lxqt-policykit-agent")
@@ -78,12 +80,15 @@ hl.on("hyprland.start", function()
         -- Thunderbird → workspace 8
         hl.dispatch(hl.dsp.exec_cmd("thunderbird",            { workspace = "8 silent" }))
         -- Discord → workspace 3
-        hl.dispatch(hl.dsp.exec_cmd("com.discordapp.Discord", { workspace = "3 silent" }))
+        hl.dispatch(hl.dsp.exec_cmd("dev.vencord.Vesktop", { workspace = "3 silent" }))
         -- Spotify (commented out, same as original)
         -- hl.dispatch(hl.dsp.exec_cmd("com.spotify.Client",     { workspace = "3 silent" }))
     end, { timeout = 5000, type = "oneshot" })
 end)
 
+hl.on("hyprland.shutdown", function()
+    os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")
+end)
 
 -----------------------
 ---- LOOK AND FEEL ----

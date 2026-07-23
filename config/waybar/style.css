@@ -13,7 +13,7 @@
 @define-color colyellow   #f1fa8c;
 
 * {
-  font-family: "Noto Sans Medium", "Font Awesome 6 Free";
+  font-family: "SF Pro Display Medium", "Font Awesome 7 Free";
   font-size: 13px;
 }
 
@@ -76,11 +76,22 @@ button:hover {
 #mode,
 #idle_inhibitor,
 #custom-weather,
+#custom-audiosink,
 #scratchpad {
   padding: 0 10px;
   color: #ffffff;
   border-radius: 4px;
   background: @colbg2;
+}
+
+#custom-audiosink {
+  color: @colcyan;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#custom-audiosink:hover {
+  background: @colgrey;
+  color: #ffffff;
 }
 
 #window,
@@ -130,6 +141,45 @@ label:focus {
 
 #wireplumber.muted {
   background-color: #f53c3c;
+}
+
+/* ── Weather condition classes ─────────────────────────────────── */
+#custom-weather {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+#custom-weather.sunny {
+  background: linear-gradient(135deg, #f6a623, #f97316);
+  color: #1a0a00;
+}
+#custom-weather.partly {
+  background: linear-gradient(135deg, #60a5fa, #93c5fd);
+  color: #0c1a2e;
+}
+#custom-weather.cloudy {
+  background: @colbg2;
+  color: @colfg;
+}
+#custom-weather.foggy {
+  background: @colgrey;
+  color: @colbg;
+}
+#custom-weather.rainy,
+#custom-weather.drizzle {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: #e0f0ff;
+}
+#custom-weather.snowy {
+  background: linear-gradient(135deg, #bfdbfe, #e0f2fe);
+  color: #0c1a2e;
+}
+#custom-weather.sleet {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #ffffff;
+}
+#custom-weather.stormy {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: @colyellow;
+  animation: blink 1.2s ease-in-out infinite alternate;
 }
 
 

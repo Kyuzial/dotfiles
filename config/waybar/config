@@ -7,19 +7,20 @@
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
-    "modules-right": ["custom/weather", "pulseaudio", "cpu", "memory", "clock", "tray"],
+    "modules-right": ["custom/weather", "custom/audiosink", "pulseaudio", "cpu", "memory", "clock", "tray"],
     // Modules configuration
     "hyprland/workspaces": {
-         "all-outputs": true,
-         "format": "{name}",
-	 "on-click": "activate",
-	 "on-scroll-up": "hyprctl dispatch workspace e-1",
-	 "on-scroll-down": "hyprctl dispatch workspace e+1"
+        "all-outputs": true,
+        "format": "{name}",
+        "on-click": "activate",
+        "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
+        "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'"
     },
     "custom/weather": {
-        "format": "{}",
-        "exec": "$HOME/.config/waybar/weather",
-        "interval": 3600
+        "exec": "python3 $HOME/.config/waybar/weather.py",
+        "return-type": "json",
+        "interval": 600,
+        "format": "{}"
     },
     "tray": {
         // "icon-size": 21,
@@ -31,10 +32,12 @@
     },
     "cpu": {
         "format": "{usage}% ",
-        "tooltip": false
+        "tooltip": false,
+	"intervals": 5
     },
     "memory": {
-        "format": "{}% "
+        "format": "{}% ",
+	"intervals": 5
     },
     "temperature": {
         "thermal-zone": 2,
@@ -67,11 +70,11 @@
         "bat": "BAT1"
     },
     "pulseaudio": {
-        // "scroll-step": 1, // %, can be a float
-        "format": "{volume}% {icon} {format_source}",
-        "format-bluetooth": "{volume}% {icon} {format_source}",
-        "format-bluetooth-muted": " {icon} {format_source}",
-        "format-muted": " {format_source}",
+        // "scroll-step": 1,
+        "format": "{volume}% {icon}    {format_source}",
+        "format-bluetooth": "{volume}%  {format_source}",
+        "format-bluetooth-muted":  " {format_source}",
+        "format-muted": "{format_source}",
         "format-source": "{volume}% ",
         "format-source-muted": "",
         "format-icons": {
@@ -85,11 +88,17 @@
         },
         "on-click": "pavucontrol"
     },
+    "custom/audiosink": {
+        "exec": "$HOME/.config/waybar/audio-cycle.sh",
+        "on-click": "$HOME/.config/waybar/audio-cycle.sh cycle",
+        "interval": 2,
+        "signal": 8,
+        "tooltip": false
+    },
     "wireplumber": {
-    "format": "{volume}% {icon}",
-    "format-muted": "",
-    "on-click": "helvum",
-    "format-icons": ["", "", ""]
+    	"format": "{volume}% {icon}",
+    	"format-muted": "",
+    	"on-click": "helvum",
+    	"format-icons": ["", "", ""]
     }
 }
-
