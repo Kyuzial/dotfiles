@@ -1,4 +1,5 @@
 # Config files for : 
+- hyprland (~/.config/hypr is a symlink to config/hyprland/ in this repo — edit here, it's live)
 - neovim
 - xorg + xressources
 - kitty
