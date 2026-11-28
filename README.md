@@ -1,5 +1,6 @@
 # Config files for : 
 - hyprland (~/.config/hypr is a symlink to config/hyprland/ in this repo — edit here, it's live)
+- waybar (~/.config/waybar is a symlink to config/waybar/ in this repo — edit here, it's live)
 - neovim
 - xorg + xressources
 - kitty

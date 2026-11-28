@@ -220,3 +220,52 @@ label:focus {
 #keyboard-state > label.locked {
   background: rgba(0, 0, 0, 0.2);
 }
+
+/* ── Media (MPRIS) — one pill, three buttons ─────────────── */
+/* group/media draws the pill; the child modules are transparent zones.
+   Icon glyphs are private-use codepoints, so the buttons force Font
+   Awesome Solid; the middle label keeps the regular bar font. */
+#media {
+  background: @colbg2;
+  border-radius: 4px;
+}
+
+#media.empty {
+  background: transparent;
+}
+
+#custom-media-prev,
+#custom-media-next {
+  font-family: "Font Awesome 7 Free Solid";
+  color: @colgrey;
+  padding: 0 11px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#custom-media-prev {
+  border-radius: 4px 0 0 4px;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+#custom-media-next {
+  border-radius: 0 4px 4px 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+#custom-media {
+  background: transparent;
+  border-radius: 0;
+  padding: 0 10px;
+  color: @colfg;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#custom-media-prev:hover,
+#custom-media-next:hover {
+  background: @colgrey;
+  color: #ffffff;
+}
+
+#custom-media:hover {
+  background: @colgrey;
+}

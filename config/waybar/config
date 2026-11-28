@@ -7,7 +7,7 @@
     // Choose the order of the modules
     "modules-left": ["hyprland/workspaces"],
     "modules-center": [],
-    "modules-right": ["custom/weather", "custom/audiosink", "pulseaudio", "cpu", "memory", "clock", "tray"],
+    "modules-right": ["custom/weather", "group/media", "custom/audiosink", "pulseaudio", "cpu", "memory", "clock", "tray"],
     // Modules configuration
     "hyprland/workspaces": {
         "all-outputs": true,
@@ -21,6 +21,32 @@
         "return-type": "json",
         "interval": 600,
         "format": "{}"
+    },
+    "group/media": {
+        "orientation": "horizontal",
+        "modules": ["custom/media-prev", "custom/media", "custom/media-next"]
+    },
+    "custom/media": {
+        "exec": "$HOME/.config/waybar/media.py",
+        "return-type": "json",
+        "format": "{}",
+        "interval": 2,
+        "signal": 9,
+        "on-click": "$HOME/.config/waybar/media.py toggle",
+        "on-click-right": "$HOME/.config/waybar/media.py next",
+        "on-click-middle": "$HOME/.config/waybar/media.py prev"
+    },
+    "custom/media-prev": {
+        "exec": "$HOME/.config/waybar/media.py btn prev",
+        "on-click": "$HOME/.config/waybar/media.py prev",
+        "signal": 9,
+        "tooltip": false
+    },
+    "custom/media-next": {
+        "exec": "$HOME/.config/waybar/media.py btn next",
+        "on-click": "$HOME/.config/waybar/media.py next",
+        "signal": 9,
+        "tooltip": false
     },
     "tray": {
         // "icon-size": 21,

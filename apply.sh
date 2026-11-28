@@ -15,6 +15,7 @@ REPO="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 # ---------------------------------------------------------------------------
 LINKS=(
     "${REPO}/config/hyprland:${HOME}/.config/hypr"
+    "${REPO}/config/waybar:${HOME}/.config/waybar"
 )
 
 apply_links() {
